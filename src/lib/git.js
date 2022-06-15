@@ -40,7 +40,7 @@ export const getHunksFromDiff = pipe(
   splitEveryTime(startsWith('@@')),
   filter(firstItemStartsWith('@@')),
   // diff msg
-  tap(pipe(console.log))
+  // tap(pipe(console.log))
 )
 
 export const getChangedLinesFromDiff = pipe(
