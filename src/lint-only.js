@@ -30,7 +30,7 @@ const getChangedFiles = R.pipeP(
   R.split('\n'),
   // tap(pipe(log)),
   R.map(path.resolve),
-  // tap(pipe(log))
+  tap(pipe(log))
 );
 
 const getDiff = R.curry((filename) =>
@@ -43,14 +43,14 @@ const getChangedFileLineMap = R.curry((filePath) =>
     getChangedLinesFromDiff,
     R.objOf('changedLines'),
     // add new key
-    R.assoc('filePath', filePath)
-    // tap(pipe(console.log))
+    R.assoc('filePath', filePath),
+    tap(pipe(console.log))
   )(filePath)
 );
 
 const lintChangedLines = pipe(
   R.map(prop('filePath')),
-  linter.executeOnFiles.bind(linter)
+  linter.executeOnFiles.bind(linter),
 );
 
 const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
@@ -60,7 +60,7 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
       changedFileLineMap
     );
     // get all changed lines
-    const changedLines = prop('changedLines', fileLineMap);
+    const changedLines = prop('changedLines', fileLineMap) || [];
 
     // console.log('changedLines',changedLines)
 
@@ -77,7 +77,7 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
 
   const countWarningMessages = countBySeverity(1);
   const countErrorMessages = countBySeverity(2);
-
+  
   const warningCount = (result) => {
     const transform = {
       warningCount: countWarningMessages(result.messages),
@@ -104,7 +104,9 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
 const applyLinter = (changedFileLineMap) =>
   pipe(
     lintChangedLines,
-    filterLinterMessages(changedFileLineMap)
+    tap(pipe(console.log)),
+    filterLinterMessages(changedFileLineMap),
+    tap(pipe(console.log)),
   )(changedFileLineMap);
 
 const logResults = pipe(prop('results'), formatter, log);
