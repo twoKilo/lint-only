@@ -14,6 +14,7 @@ const linter = new CLIEngine({
   rules: {
     'no-console': 'error',
     'object-curly-spacing': ['error', 'always'],
+    'arrow-spacing': ["error", { "before": true, "after": true }]
   },
 });
 const formatter = linter.getFormatter();
@@ -30,7 +31,7 @@ const getChangedFiles = R.pipeP(
   R.split('\n'),
   // tap(pipe(log)),
   R.map(path.resolve),
-  tap(pipe(log))
+  // tap(pipe(log))
 );
 
 const getDiff = R.curry((filename) =>
@@ -44,7 +45,7 @@ const getChangedFileLineMap = R.curry((filePath) =>
     R.objOf('changedLines'),
     // add new key
     R.assoc('filePath', filePath),
-    tap(pipe(console.log))
+    // tap(pipe(console.log))
   )(filePath)
 );
 
