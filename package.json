@@ -1,6 +1,6 @@
 {
   "name": "lint-only",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "lint only changed lines of code",
   "main": "./dist/lint-only.js",
   "bin": "./dist/lint-only.js",

@@ -5,7 +5,7 @@ import path from 'path';
 import { CLIEngine } from 'eslint';
 import chalk from 'chalk';
 
-import { pipe, prop, propEq, tap } from 'ramda';
+import { pipe, prop, propEq, tap, endsWith } from 'ramda';
 import { getChangedLinesFromDiff } from './lib/git';
 
 const log = (info) => console.log(chalk.hex('#FC8F54').underline.bold(info));
@@ -18,6 +18,8 @@ const linter = new CLIEngine({
   },
 });
 const formatter = linter.getFormatter();
+const fileNeedsToLint = [endsWith('.js'), endsWith('.jsx'), endsWith('.ts'),endsWith('.tsx')];
+
 const getChangedFiles = R.pipeP(
   () =>
     exec('git', [
@@ -30,8 +32,10 @@ const getChangedFiles = R.pipeP(
   prop('stdout'),
   R.split('\n'),
   // tap(pipe(log)),
+  R.filter(R.anyPass(fileNeedsToLint)),
+  // tap(pipe(log)),
+  
   R.map(path.resolve),
-  // tap(pipe(log))
 );
 
 const getDiff = R.curry((filename) =>
@@ -105,9 +109,9 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
 const applyLinter = (changedFileLineMap) =>
   pipe(
     lintChangedLines,
-    tap(pipe(console.log)),
+    // tap(pipe(console.log)),
     filterLinterMessages(changedFileLineMap),
-    tap(pipe(console.log)),
+    // tap(pipe(console.log)),
   )(changedFileLineMap);
 
 const logResults = pipe(prop('results'), formatter, log);
