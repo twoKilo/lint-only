@@ -6,16 +6,22 @@ import { CLIEngine } from 'eslint';
 import chalk from 'chalk';
 
 import { pipe, prop, propEq, tap, endsWith } from 'ramda';
-import { getChangedLinesFromDiff } from './lib/git';
+import {getChangedLinesFromDiff} from './lib/git';
 
+const applyAutoFix = async (results) => {
+  await CLIEngine.outputFixes(results);
+  return results
+}
 const log = (info) => console.log(chalk.hex('#FC8F54').underline.bold(info));
 
 const linter = new CLIEngine({
+  // root: true,
   rules: {
     'no-console': 'error',
     'object-curly-spacing': ['error', 'always'],
     'arrow-spacing': ["error", { "before": true, "after": true }]
   },
+  // fix:true
 });
 const formatter = linter.getFormatter();
 const fileNeedsToLint = [endsWith('.js'), endsWith('.jsx'), endsWith('.ts'),endsWith('.tsx')];
@@ -67,8 +73,7 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
     // get all changed lines
     const changedLines = prop('changedLines', fileLineMap) || [];
 
-    // console.log('changedLines',changedLines)
-
+    // console.log('whole lint result',result)
     // exclude un-relevant lines
     const filterMessages = R.evolve({
       messages: R.filter((message) => changedLines.includes(message.line)),
@@ -107,7 +112,7 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
 };
 
 const applyLinter = (changedFileLineMap) =>
-  pipe(
+  R.pipe(
     lintChangedLines,
     // tap(pipe(console.log)),
     filterLinterMessages(changedFileLineMap),
