@@ -1,13 +1,13 @@
 {
   "name": "lint-only",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "lint only changed lines of code",
   "main": "./dist/lint-only.js",
   "bin": "./dist/lint-only.js",
   "scripts": {
     "build": "webpack",
     "lint": "eslint 'src/**/*.js'",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "test": "npm run lint"
   },
   "repository": {
@@ -21,27 +21,18 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-ramda": "^1.6.1",
-    "eslint": "^7.20.0",
-    "eslint-config-pagarme-base": "^2.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-react": "^7.30.0",
-    "prettier": "1.12.0",
-    "prettier-eslint": "^15.0.1",
-    "webpack": "^4.5.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-node-externals": "^1.7.2"
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.22.0",
+    "babel-loader": "^9.1.0",
+    "eslint": "^8.50.0",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "bluebird": "^3.5.1",
-    "chalk": "4.1.2",
-    "commander": "^2.15.1",
-    "execa": "^0.10.0",
-    "meow": "^5.0.0",
-    "ramda": "^0.25.0"
+    "chalk": "^4.1.2",
+    "execa": "^5.1.1",
+    "meow": "^9.0.0",
+    "ramda": "^0.29.0"
   }
 }

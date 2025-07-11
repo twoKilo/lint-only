@@ -1,10 +1,6 @@
 const path = require('path')
 const { BannerPlugin } = require('webpack')
 const externals = require('webpack-node-externals')
-// import path from 'path';
-// import pkg from 'webpack';
-// import externals from 'webpack-node-externals';
-// const {BannerPlugin} = pkg;
 
 const config = {
   context: path.join(__dirname, './src'),
