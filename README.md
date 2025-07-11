@@ -1,7 +1,7 @@
 # Lint-Only
 
 [![NPM version](https://img.shields.io/npm/v/lint-only.svg?style=flat)](https://www.npmjs.com/package/lint-only)
-[![Build Status](https://img.shields.io/travis/your-username/lint-only.svg?style=flat)](https://travis-ci.org/your-username/lint-only)
+[![Node.js CI](https://github.com/twoKilo/lint-only/actions/workflows/ci.yml/badge.svg)](https://github.com/twoKilo/lint-only/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > 只对 Git 暂存区中已更改的代码行进行 Lint 检查。
