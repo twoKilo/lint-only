@@ -4,15 +4,15 @@ import path from 'path';
 import { ESLint } from 'eslint';
 import chalk from 'chalk';
 
-import { pipe, prop, propEq, tap, endsWith } from 'ramda';
+import { prop, endsWith } from 'ramda';
 import {getChangedLinesFromDiff} from './lib/git';
 
-const applyAutoFix = async (results) => {
-  await CLIEngine.outputFixes(results);
-  return results
-}
+// const applyAutoFix = async (results) => {
+//   await CLIEngine.outputFixes(results);
+//   return results
+// }
 
-const log = (info) => console.log(chalk.hex('#FC8F54').underline.bold(info));
+// const log = (info) => console.log(chalk.hex('#FC8F54').underline.bold(info));
 
 const eslint = new ESLint(); // 默认使用 .eslintrc
 
@@ -56,92 +56,92 @@ const getChangedFileLineMap = R.curry((filePath) =>
   )(filePath)
 );
 
-const lintChangedLines = pipe(
-  R.map(prop('filePath')),
-  linter.executeOnFiles.bind(linter),
-);
+// const lintChangedLines = pipe(
+//   R.map(prop('filePath')),
+//   linter.executeOnFiles.bind(linter),
+// );
 
-const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
-  const filterMessagesByFile = (result) => {
-    const fileLineMap = R.find(
-      propEq('filePath', result.filePath),
-      changedFileLineMap
-    );
-    // get all changed lines
-    const changedLines = prop('changedLines', fileLineMap) || [];
+// const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
+//   const filterMessagesByFile = (result) => {
+//     const fileLineMap = R.find(
+//       propEq('filePath', result.filePath),
+//       changedFileLineMap
+//     );
+//     // get all changed lines
+//     const changedLines = prop('changedLines', fileLineMap) || [];
 
-    // console.log('whole lint result',result)
-    // exclude un-relevant lines
-    const filterMessages = R.evolve({
-      messages: R.filter((message) => changedLines.includes(message.line)),
-    });
-    // console.log('filterMessages',result)
-    return filterMessages(result);
-  };
+//     // console.log('whole lint result',result)
+//     // exclude un-relevant lines
+//     const filterMessages = R.evolve({
+//       messages: R.filter((message) => changedLines.includes(message.line)),
+//     });
+//     // console.log('filterMessages',result)
+//     return filterMessages(result);
+//   };
 
-  const countBySeverity = (severity) =>
-    pipe(R.filter(propEq('severity', severity)), R.length);
+//   const countBySeverity = (severity) =>
+//     pipe(R.filter(propEq('severity', severity)), R.length);
 
-  const countWarningMessages = countBySeverity(1);
-  const countErrorMessages = countBySeverity(2);
+//   const countWarningMessages = countBySeverity(1);
+//   const countErrorMessages = countBySeverity(2);
   
-  const warningCount = (result) => {
-    const transform = {
-      warningCount: countWarningMessages(result.messages),
-    };
+//   const warningCount = (result) => {
+//     const transform = {
+//       warningCount: countWarningMessages(result.messages),
+//     };
 
-    return R.merge(result, transform);
-  };
+//     return R.merge(result, transform);
+//   };
 
-  const errorCount = (result) => {
-    const errorCountProp = {
-      errorCount: countErrorMessages(result.messages),
-    };
+//   const errorCount = (result) => {
+//     const errorCountProp = {
+//       errorCount: countErrorMessages(result.messages),
+//     };
 
-    return R.merge(result, errorCountProp);
-  };
+//     return R.merge(result, errorCountProp);
+//   };
 
-  return pipe(
-    prop('results'),
-    R.map(pipe(filterMessagesByFile, warningCount, errorCount)),
-    R.objOf('results')
-  )(linterOutput);
-};
+//   return pipe(
+//     prop('results'),
+//     R.map(pipe(filterMessagesByFile, warningCount, errorCount)),
+//     R.objOf('results')
+//   )(linterOutput);
+// };
 
-const applyLinter = (changedFileLineMap) =>
-  pipe(
-    lintChangedLines,
-    // tap(pipe(console.log)),
-    filterLinterMessages(changedFileLineMap),
-    // tap(pipe(console.log)),
-  )(changedFileLineMap);
+// const applyLinter = (changedFileLineMap) =>
+//   pipe(
+//     lintChangedLines,
+//     // tap(pipe(console.log)),
+//     filterLinterMessages(changedFileLineMap),
+//     // tap(pipe(console.log)),
+//   )(changedFileLineMap);
 
-const logResults = pipe(prop('results'), formatter, log);
+// const logResults = pipe(prop('results'), formatter, log);
 
-const getErrorCountFromReport = pipe(
-  prop('results'),
-  R.pluck('errorCount'),
-  R.sum
-);
+// const getErrorCountFromReport = pipe(
+//   prop('results'),
+//   R.pluck('errorCount'),
+//   R.sum
+// );
 
-const exitProcess = R.curryN(2, (n) => process.exit(n));
+// const exitProcess = R.curryN(2, (n) => process.exit(n));
 
-const reportResults = pipe(
-  tap(logResults),
-  getErrorCountFromReport,
-  // conditionals
-  R.cond([
-    [R.equals(0), exitProcess(0)],
-    [R.T, exitProcess(1)],
-  ])
-);
+// const reportResults = pipe(
+//   tap(logResults),
+//   getErrorCountFromReport,
+//   // conditionals
+//   R.cond([
+//     [R.equals(0), exitProcess(0)],
+//     [R.T, exitProcess(1)],
+//   ])
+// );
 
-const runOld = (config = {}) =>
-  Promise.resolve(config)
-    .then(getChangedFiles)
-    .map(getChangedFileLineMap)
-    .then(applyLinter)
-    .then(reportResults);
+// const runOld = (config = {}) =>
+//   Promise.resolve(config)
+//     .then(getChangedFiles)
+//     .map(getChangedFileLineMap)
+//     .then(applyLinter)
+//     .then(reportResults);
 
 
 const run = async (config = {}) => {

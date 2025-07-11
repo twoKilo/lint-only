@@ -6,7 +6,6 @@ import {
   split,
   startsWith,
   uniq,
-  tap
 } from 'ramda'
 import {
   doesNotStartWith,
