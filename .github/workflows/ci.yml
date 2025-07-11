@@ -1,0 +1,37 @@
+name: Node.js CI
+
+# 当有代码推送到 main 分支，或有人创建 Pull Request 时，触发这个工作流
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # 指定运行环境为最新的 Ubuntu
+    runs-on: ubuntu-latest
+
+    strategy:
+      # 我们将测试多个 Node.js 版本
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    # 第一步：检出你的代码
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 第二步：设置 Node.js 环境
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    # 第三步：安装项目依赖
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run lint
+      run: npm run lint
