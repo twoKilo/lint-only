@@ -12,6 +12,7 @@ const applyAutoFix = async (results) => {
   await CLIEngine.outputFixes(results);
   return results
 }
+
 const log = (info) => console.log(chalk.hex('#FC8F54').underline.bold(info));
 
 const linter = new CLIEngine({
@@ -112,7 +113,7 @@ const filterLinterMessages = (changedFileLineMap) => (linterOutput) => {
 };
 
 const applyLinter = (changedFileLineMap) =>
-  R.pipe(
+  pipe(
     lintChangedLines,
     // tap(pipe(console.log)),
     filterLinterMessages(changedFileLineMap),

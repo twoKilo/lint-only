@@ -30,7 +30,6 @@ export const getChangedLinesFromHunk = (hunk) => {
         return [...changedLines, lineNumber]
       }
     }
-
     return changedLines
   }, [])
 }
